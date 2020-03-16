@@ -1,0 +1,71 @@
+<div class="page-content">
+  <div class="page-content-item" *ngIf="($addedProductCount | async) > 0">
+    <gs-cart-products></gs-cart-products>
+    <mat-horizontal-stepper [linear]="true" #stepper class="page-content-item">
+      <mat-step [stepControl]="nameFormGroup">
+        <form [formGroup]="nameFormGroup">
+          <ng-template matStepLabel>Fill out your name</ng-template>
+          <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput placeholder="Name" formControlName="name" required>
+            <mat-error *ngIf="name.invalid && name.errors.required">Name is required</mat-error>
+          </mat-form-field>
+          <div>
+            <button mat-button matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
+      <mat-step [stepControl]="emailFormGroup">
+        <form [formGroup]="emailFormGroup">
+          <ng-template matStepLabel>Fill out your email</ng-template>
+          <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" placeholder="Ex. xxx@example.com" required>
+            <mat-error *ngIf="email.invalid && email.errors.required">Email is required</mat-error>
+            <mat-error *ngIf="email.invalid && email.errors.email">Email has invalid format</mat-error>
+          </mat-form-field>
+          <div>
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-button matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
+      <mat-step [stepControl]="telephoneFormGroup">
+        <form [formGroup]="telephoneFormGroup">
+          <ng-template matStepLabel>Fill out your telephone</ng-template>
+          <mat-form-field>
+            <mat-label>Telephone</mat-label>
+            <input matInput formControlName="telephone" placeholder="Ex. +375445555555"
+                  required>
+            <mat-error *ngIf="telephone.invalid && telephone.errors.required">Telephone is required</mat-error>
+            <mat-error *ngIf="telephone.invalid && telephone.errors.pattern">Telephone has invalid format</mat-error>
+          </mat-form-field>
+          <div>
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-button matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
+      <mat-step [stepControl]="doneFormGroup">
+        <form [formGroup]="doneFormGroup">
+          <ng-template matStepLabel>Done</ng-template>
+          <mat-form-field class="comment-form-field">
+            <mat-label>Comment to order</mat-label>
+            <textarea matInput formControlName="comment" placeholder="Write what do you want"></textarea>
+          </mat-form-field>
+          <div>
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-raised-button color="primary" (click)="confirmOrder()">Confirm order</button>
+          </div>
+        </form>
+      </mat-step>
+    </mat-horizontal-stepper>
+  </div>
+  <div *ngIf="($addedProductCount | async) === 0">
+    <p class="mat-headline cart-empty">Your cart is empty! Continue shopping
+      <button mat-icon-button aria-label="Continue shopping" class="cart-empty-btn" routerLink="">
+        <mat-icon>shopping_basket</mat-icon>
+      </button>
+    </p>
+  </div>
+</div>

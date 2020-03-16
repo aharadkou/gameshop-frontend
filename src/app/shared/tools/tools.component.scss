@@ -1,0 +1,15 @@
+$tools-item-margin-right: 20px;
+
+.tools-wrapper {
+  display: flex;
+  align-items: center;
+  .tools-item {
+    margin-right: $tools-item-margin-right;
+  }
+  .search-form-field {
+    width: 200px;
+  }
+  .sort-criteria-btn {
+    padding: 0;
+  }
+}

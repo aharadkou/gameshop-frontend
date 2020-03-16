@@ -1,0 +1,16 @@
+@import '~@angular/material/theming';
+
+@import '_global-variables';
+@import '_mixins';
+@import '_list-tools';
+@import '_page-content';
+
+$config: mat-typography-config();
+
+.primary-color {
+  color: $primary;
+}
+
+.accent-color {
+  color: $accent;
+}

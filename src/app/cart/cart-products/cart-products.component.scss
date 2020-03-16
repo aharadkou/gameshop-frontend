@@ -1,0 +1,78 @@
+@import 'main';
+
+$cart-font-weight: 500;
+$cart-title-padding-bottom: 15px;
+$cart-title-padding-top: 15px;
+
+$cart-item-padding-bottom: 15px;
+$cart-item-padding-top: 15px;
+
+$cart-item-image-width: 96px;
+$cart-item-image-height: 96px;
+$cart-item-image-border-radius: 64px;
+
+.cart {
+  font-weight: $cart-font-weight;
+  .cart-title {
+    font-size: mat-font-size($config, headline);
+    display: block;
+    padding-bottom: $cart-title-padding-bottom;
+    padding-top: $cart-title-padding-top;
+  }
+  .cart-item {
+    display: flex;
+    padding-top: $cart-item-padding-top;
+    padding-bottom: $cart-item-padding-bottom;
+    justify-content: space-between;
+    & > div {
+      display: flex;
+      flex-grow: 1;
+      flex-basis: 0;
+      align-items: center;
+    }
+    & > div:first-child {
+      justify-content: flex-start;
+    }
+    & > div:nth-child(2) {
+      justify-content: center;
+    }
+    & > div:nth-child(3) {
+      justify-content: flex-end;
+    }
+    &-count-input {
+      padding-top: 4px;
+      width: 36px;
+      padding-right: 12px;
+    }
+    &-title {
+      font-size: mat-font-size($config, title);
+      padding-left: 10px;
+      cursor: pointer;
+    }
+    &-btn-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      .cart-item-btn {
+        width: auto;
+      }
+    }
+    &-devider {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+    &-image {
+      width: $cart-item-image-width;
+      height: $cart-item-image-height;
+      border-radius: $cart-item-image-border-radius;
+    }
+    &-remove {
+      font-size: 36px;
+      line-height: 24px;
+      cursor: pointer;
+    }
+  }
+  .cart-total-price {
+    font-size: mat-font-size($config, title);
+  }
+}

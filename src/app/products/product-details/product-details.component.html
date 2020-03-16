@@ -1,0 +1,29 @@
+<ng-container *ngIf="product">
+  <div class="page-content">
+    <div class="page-content-item">
+      <div class="product-details-component">
+        <div class="product-details-component-left">
+          <img [attr.src]="product.imageUrl" class="product-details-component-image" />
+        </div>
+        <div class="product-details-component-right">
+          <h1 class="product-details-component-title">{{ product.title }}</h1>
+          <mat-chip-list>
+            <ng-container *ngFor="let category of product.categories">
+              <mat-chip>{{ category?.name }}</mat-chip>
+            </ng-container>
+            <mat-chip color="primary" selected>{{ product.price }}$</mat-chip>
+          </mat-chip-list>
+          <p class="product-details-component-description">{{ product.description }}</p>
+          <div class="product-details-component-controls">
+            <button mat-stroked-button color="accent" class="add-to-cart-btn" routerLink="">
+              <mat-icon aria-hidden="false" aria-label="All products">arrow_back</mat-icon>All products
+            </button>
+            <button mat-stroked-button color="primary" class="add-to-cart-btn" (click)="addToCart()">
+              <mat-icon aria-hidden="false" aria-label="Add to cart">add_shopping_cart</mat-icon>{{ 'Add to cart' | uppercase }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>

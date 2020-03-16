@@ -1,0 +1,33 @@
+<div class="cart">
+  <span class="cart-title">Cart</span>
+  <mat-divider></mat-divider>
+  <ng-container *ngFor="let addedProduct of addedProducts; let i = index">
+    <ng-container *ngIf="getProductCount(addedProduct)">
+      <div class="cart-item">
+        <div>
+          <img class="cart-item-image" [attr.src]="addedProduct.imageUrl">
+          <span class="cart-item-title" [routerLink]="['/products', addedProduct.id]">{{ addedProduct.title }}</span>
+        </div>
+        <div>
+          <span class="cart-item-price">{{ addedProduct.price }}$</span>
+          <span class="cart-item-devider">*</span>
+          <div class="cart-item-btn-container">
+            <mat-form-field class="cart-item-count-input">
+              <input type="number" class="form-control" [formControl]="getCountControl(i)" min="1" max="99" matInput>
+            </mat-form-field>
+          </div>
+          <span>pcs.</span>
+          <span class="cart-item-devider">=</span>
+          <span>{{ getTotalProductPrice(addedProduct) }}$</span>
+        </div>
+        <div>
+          <mat-icon color="warn" class="cart-item-remove" (click)="removeFromCart(addedProduct)">delete_forever</mat-icon>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+    </ng-container>
+  </ng-container>
+  <div>
+    <p class="cart-total-price">Total price: {{ getTotalPrice() }}$</p>
+  </div>
+</div>

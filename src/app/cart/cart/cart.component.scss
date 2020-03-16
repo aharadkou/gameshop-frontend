@@ -1,0 +1,13 @@
+@import 'main';
+
+.cart-empty {
+  margin-top: 20px;
+  .cart-empty-btn {
+   font-size: 32px;
+   color: $accent;
+  }
+}
+
+.comment-form-field {
+  width: 250px
+}

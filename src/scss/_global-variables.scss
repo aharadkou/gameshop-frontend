@@ -1,0 +1,9 @@
+@import '~@angular/material/theming';
+
+$padding-main-left: 10px;
+$padding-main-right: 10px;
+$max-width-main: 1200px;
+$header-height: 64px;
+
+$primary: mat-color(mat-palette($mat-indigo));
+$accent:  mat-color(mat-palette($mat-pink, A200, A100, A400));

@@ -1,0 +1,4 @@
+<div class="list page-content" infiniteScroll (scrolled)="scrolledToBottom.emit()" [scrollWindow]="false" [infiniteScrollDistance]="isAllDataLoaded ? 0 : 1">
+  <ng-content select="listBody"></ng-content>
+</div>
+

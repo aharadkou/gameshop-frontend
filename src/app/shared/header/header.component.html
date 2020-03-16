@@ -1,0 +1,33 @@
+<div class="header-component">
+  <div class="header-wrapper">
+    <div class="header-wrapper-left">
+      <span class="header-item header-logo" routerLink="">
+        <mat-icon>games</mat-icon>
+        <span class="header-logo-title">Gameshop</span>
+      </span>
+      <span class="header-item">
+        About
+      </span>
+      <span class="header-item">
+        Сontacts
+      </span>
+    </div>
+    <div class="header-wrapper-right">
+      <mat-menu #menu="matMenu">
+        <ng-template matMenuContent let-addedProductCount="$addedProductCount">
+          <button mat-menu-item [disabled]="!($addedProductCount | async)" routerLink="/cart">
+            <mat-icon color="primary">shop</mat-icon>
+            <span>Proceed to checkout</span>
+          </button>
+          <button mat-menu-item (click)="clearCart()" [disabled]="!($addedProductCount | async)">
+            <mat-icon color="warn">remove_shopping_cart</mat-icon>
+            <span>Clear cart</span>
+          </button>
+        </ng-template>
+      </mat-menu>
+      <span class="header-item header-cart-item" [matBadge]="$addedProductCount | async" matBadgeColor="accent" [matMenuTriggerFor]="menu" [matMenuTriggerData]="{$addedProductCount: $addedProductCount}">
+        <mat-icon class="header-cart-icon">shopping_cart</mat-icon>
+      </span>
+    </div>
+  </div>
+</div>

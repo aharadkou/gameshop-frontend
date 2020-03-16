@@ -1,0 +1,31 @@
+$tools-height: 96px;
+$list-height: calc(100vh - #{$header-height} - #{$tools-height});
+$list-padding-top: 10px;
+$list-padding-bottom: 10px;
+
+.list-tools-container {
+  display: flex;
+  flex-direction: column;
+  .tools {
+    @include page-content();
+    justify-content: center;
+    height: $tools-height;
+    .tools-wrapper {
+      @include page-content-item();
+    }
+  }
+  .list {
+    @include page-content();
+    position: relative;
+    box-sizing: border-box;
+    overflow-y: auto;
+    height: $list-height;
+    padding-left: $padding-main-left;
+    padding-right: $padding-main-right;
+    padding-bottom: $list-padding-bottom;
+    padding-top: $list-padding-top;
+    .list-item {
+      @include page-content-item();
+    }
+  }
+}

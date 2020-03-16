@@ -1,0 +1,57 @@
+@import 'main';
+
+$header-component-color: white;
+
+$header-item-left-margin-right: 20px;
+$header-item-right-margin-right: 7px;
+
+$header-logo-title-margin-left: 7px;
+
+$header-cart-icon-transform: scale(1.4);
+
+.header-component {
+  @include page-content();
+  justify-content: center;
+  padding-left: $padding-main-left;
+  padding-right: $padding-main-right;
+  height: $header-height;
+  background-color: $primary;
+  color: $header-component-color;
+
+  .header-wrapper {
+    @include page-content-item();
+    display: flex;
+    justify-content: space-between;
+    .header-item {
+      cursor: pointer;
+      align-self: center;
+    }
+    &-left {
+      display: flex;
+      .header-item {
+        margin-right: $header-item-left-margin-right;
+      }
+    }
+    &-right {
+      display: flex;
+      .header-item {
+        margin-right: $header-item-right-margin-right;
+      }
+    }
+    .header-logo {
+      display: flex;
+      &-title {
+        align-self: center;
+        margin-left: $header-logo-title-margin-left;
+      }
+    }
+    .header-cart-icon {
+      transform: $header-cart-icon-transform;
+    }
+  }
+}
+
+
+
+
+

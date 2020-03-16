@@ -1,0 +1,7 @@
+.page-content {
+  @include page-content();
+}
+
+.page-content-item {
+  @include page-content-item();
+}
