@@ -1,11 +1,9 @@
 @import 'main';
 
-$products-list-item-margin-top: 30px;
-$products-list-item-border-radius: 3px;
 $products-list-item-padding-right: 15px;
-
 $products-image-width: 172px;
 $products-image-height: 172px;
+$products-list-item-border-radius: 3px;
 $products-image-border-radius: $products-list-item-border-radius 0 0 $products-list-item-border-radius;
 
 $product-info-margin-top: 30px;
@@ -14,12 +12,7 @@ $product-decsription-max-height: 40px;
 $product-decsription-padding-right: 20px;
 
 .products-list-item {
-  @include shadow();
   display: flex;
-  border-radius: $products-list-item-border-radius;
-  &:not(:first-child) {
-    margin-top: $products-list-item-margin-top;
-  }
   &-left {
     display: flex;
   }

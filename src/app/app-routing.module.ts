@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { ProductsComponent } from './products/products/products.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { InterceptorService } from './common-services/interceptors/interceptor.service';
 import { CartComponent } from './cart/cart/cart.component';
@@ -10,6 +9,7 @@ import { ErrorComponent } from './shared/error/error.component';
 import { ProductAddComponent } from './products/product-add/product-add.component';
 import { ProductEditComponent } from './products/product-edit/product-edit.component';
 import { OrdersListComponent } from './orders/orders-list/orders-list.component';
+import { AuthGuard } from './common-services/guards/auth.guard';
 
 
 const routes: Routes = [
@@ -41,7 +41,8 @@ const routes: Routes = [
   },
   {
     path: 'orders',
-    component: OrdersListComponent
+    component: OrdersListComponent,
+    // canActivate: [AuthGuard]
   },
   {
     path: 'cart',

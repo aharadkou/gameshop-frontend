@@ -1,6 +1,6 @@
 <div class="tools"> 
   <div class="page-content-item tools-wrapper">
-    <mat-form-field class="tools-item search-form-field">
+    <mat-form-field class="tools-item search-form-field" *ngIf="searchPlaceholder">
       <mat-label>{{ searchPlaceholder }}</mat-label>
       <input matInput type="text" [formControl]="searchControl">
       <button mat-button *ngIf="searchValue" matSuffix mat-icon-button aria-label="Clear" (click)="clearSearch()">

@@ -5,4 +5,5 @@ export interface Order {
   phone: string;
   comment?: string;
   date?: Date;
+  isProcessed?: boolean;
 }

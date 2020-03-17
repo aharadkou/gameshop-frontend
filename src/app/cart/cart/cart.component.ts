@@ -82,7 +82,7 @@ export class CartComponent implements OnInit {
         }, this.cartService.getCart()).subscribe(order => {
           this.cartService.clearCart();
           this.router.navigateByUrl('');
-          this.snackBar.open(`Thank you for your order, ${order.name}! We'll contact you soon!`, 'Success', {
+          this.snackBar.open(`Thank you for your order, ${order.name}! We'll process your Order № ${order.id} soon!`, 'Success', {
             duration: SNACKBAR_DURATION
           });
         });

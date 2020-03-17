@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { ProductsComponent } from './products/products.component';
 import { ProductsListComponent } from './products-list/products-list.component';
 import { SharedModule } from '../shared/shared.module';
 import { ProductDetailsComponent } from './product-details/product-details.component';
@@ -10,10 +9,16 @@ import { ProductFormComponent } from './product-form/product-form.component';
 
 
 @NgModule({
-  declarations: [ProductsComponent, ProductsListComponent, ProductDetailsComponent, ProductAddComponent, ProductEditComponent, ProductFormComponent],
+  declarations: [
+    ProductsListComponent,
+    ProductDetailsComponent,
+    ProductAddComponent,
+    ProductEditComponent,
+    ProductFormComponent
+  ],
   imports: [
     SharedModule
   ],
-  exports: [ProductsComponent, ProductsListComponent]
+  exports: [ProductsListComponent]
 })
 export class ProductsModule { }

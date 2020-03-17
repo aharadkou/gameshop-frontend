@@ -1,1 +1,56 @@
-<p>orders-list works!</p>
+<div class="list-tools-container">
+  <gs-tools 
+    searchPlaceholder="Order №, Name, Email, Phone"
+    filterPlaceholder="Processed status"
+    [filterOptions]="this.statuses"
+    (filterChange)="filterChanged($event)"
+    (searchChange)="searchChanged($event)"
+  >
+  </gs-tools>
+<gs-list #list (scrolledToBottom)="loadMoreOrders()" [isAllDataLoaded]="ordersChunk.isAllDataLoaded" >
+  <ng-container ngProjectAs="listBody">
+    <ng-container [ngTemplateOutlet]="ordersList"></ng-container>
+  </ng-container>
+</gs-list>
+</div>
+
+<ng-template #ordersList>
+  <ng-container *ngFor="let order of ordersChunk.data">
+    <ng-container [ngTemplateOutlet]="ordersListItem" [ngTemplateOutletContext]="{order: order}"></ng-container>
+  </ng-container>
+</ng-template>
+
+<ng-template #ordersListItem let-order="order">
+  <div class="orders-list-item list-item">
+    <div class="orders-list-item-left">
+      <h2 class="orders-list-item-title">Order № {{ order.id }}</h2>
+      <mat-slide-toggle [checked]="order.isProcessed" (change)="processedStatusChanged(order)">
+        {{ order.isProcessed ? 'Processed' : 'Unprocessed' }}
+      </mat-slide-toggle>
+    </div>
+    <div class="orders-list-item-right">
+      <mat-accordion multi="true">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Contacts
+            </mat-panel-title>
+            <mat-panel-description>
+              Customer contacts info
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Order details
+            </mat-panel-title>
+            <mat-panel-description>
+              Products related to this order
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+</ng-template>

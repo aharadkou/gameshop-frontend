@@ -2,6 +2,8 @@ $tools-height: 96px;
 $list-height: calc(100vh - #{$header-height} - #{$tools-height});
 $list-padding-top: 10px;
 $list-padding-bottom: 10px;
+$list-item-margin-top: 30px;
+$list-item-border-radius: 3px;
 
 .list-tools-container {
   display: flex;
@@ -25,7 +27,13 @@ $list-padding-bottom: 10px;
     padding-bottom: $list-padding-bottom;
     padding-top: $list-padding-top;
     .list-item {
+      width: 100%;
       @include page-content-item();
+      @include shadow();
+      border-radius: $list-item-border-radius;
+      &:not(:first-child) {
+        margin-top: $list-item-margin-top;
+      }
     }
   }
 }

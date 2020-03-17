@@ -41,4 +41,5 @@ export class ProductService {
     });
     return this.http.get<Product[]>(GAMES_URL, {params});
   }
+
 }
