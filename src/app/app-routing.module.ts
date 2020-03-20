@@ -39,10 +39,17 @@ const routes: Routes = [
       }
     ]
   },
+
   {
-    path: 'orders',
-    component: OrdersListComponent,
-    // canActivate: [AuthGuard]
+    path: 'admin',
+    // canActivate: [AuthGuard],
+    // canActivateChild: [AuthGuard]
+    children: [
+      {
+        path: 'orders',
+        component: OrdersListComponent,
+      },
+    ]
   },
   {
     path: 'cart',

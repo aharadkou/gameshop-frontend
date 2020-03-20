@@ -1,3 +1,5 @@
+import { Product } from './product.model';
+
 export interface Order {
   id?: number;
   name: string;
@@ -6,4 +8,5 @@ export interface Order {
   comment?: string;
   date?: Date;
   isProcessed?: boolean;
+  cartItems?: {game: Product, count: number}[];
 }

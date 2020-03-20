@@ -42,4 +42,8 @@ export class OrderService {
       tap(() => ordersChunk.isLoaded = true)
     );
   }
+
+  deleteOrderById(orderId: number) {
+    return this.http.delete<any>(`${ORDERS_URL}/${orderId}`);
+  }
 }

@@ -30,25 +30,60 @@
     </div>
     <div class="orders-list-item-right">
       <mat-accordion multi="true">
-        <mat-expansion-panel>
+        <mat-expansion-panel class="mat-elevation-z0">
           <mat-expansion-panel-header>
             <mat-panel-title>
-              Contacts
+              Details
             </mat-panel-title>
             <mat-panel-description>
-              Customer contacts info
-            </mat-panel-description>
-          </mat-expansion-panel-header>
-        </mat-expansion-panel>
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>
               Order details
-            </mat-panel-title>
-            <mat-panel-description>
-              Products related to this order
             </mat-panel-description>
           </mat-expansion-panel-header>
+          <div class="orders-list-item-contacts">
+            <div class="orders-list-item-contacts-info">
+              <p><span>Name: </span>{{ order.name }}</p>
+              <p><span>Email: </span>{{ order.email }}</p>
+              <p><span>Phone: </span>{{ order.phone }}</p>
+              <p><span>Date: </span>{{ order.date | date }}</p>
+              <button mat-raised-button color="warn" (click)="openDeleteDialog(order)">
+                <mat-icon aria-hidden="false" aria-label="Remove order">delete_forever</mat-icon>Delete an order
+              </button>
+            </div>
+            <div class="orders-list-item-contacts-comment" *ngIf="order.comment">
+              <p class="orders-list-item-contacts-comment-title">
+                Comment:
+              </p>
+              <p>{{ order.comment }}</p>
+            </div>
+            <div class="orders-list-item-products">
+              <div class="orders-list-item-products-row">
+                <p class="orders-list-item-products-col orders-list-item-products-header orders-list-item-products-col-title">
+                  Product
+                </p>
+                <p class="orders-list-item-products-col orders-list-item-products-header">
+                  Price
+                </p>
+                <p class="orders-list-item-products-col orders-list-item-products-header">
+                  Amount
+                </p>
+              </div>
+              <div class="orders-list-item-products-row" *ngFor="let cartItem of order.cartItems">
+                <div class="orders-list-item-products-col orders-list-item-products-col-title">
+                  <img [attr.src]="cartItem.game?.imageUrl" class="orders-list-item-products-image" />
+                  <p class="orders-list-item-products-title">{{ cartItem.game?.title }}</p>
+                </div>
+                <div class="orders-list-item-products-col orders-list-item-products-price">
+                  {{ cartItem.game?.price }}$
+                </div>
+                <div class="orders-list-item-products-col">
+                  {{ cartItem.count }} pcs.
+                </div>
+              </div>
+              <div class="orders-list-item-products-row">
+                <p class="orders-list-item-products-header">Total price: {{ getTotalPrice(order) }}$</p>
+              </div>
+            </div>
+          </div>
         </mat-expansion-panel>
       </mat-accordion>
     </div>

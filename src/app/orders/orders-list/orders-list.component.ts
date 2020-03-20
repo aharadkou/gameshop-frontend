@@ -5,6 +5,8 @@ import { FilterOption } from 'src/app/common-services/interfaces/filter-option.m
 import { DATA_LOAD_LIMIT } from 'src/app/common-services/constants/constants';
 import { OrderService } from 'src/app/common-services/services/order.service';
 import { ListComponent } from 'src/app/shared/list/list.component';
+import { MatDialog } from '@angular/material/dialog';
+import { OrderDeleteDialogComponent } from '../order-delete-dialog/order-delete-dialog.component';
 
 @Component({
   selector: 'gs-orders-list',
@@ -34,7 +36,8 @@ export class OrdersListComponent implements OnInit {
 
   constructor(
     private cdRef: ChangeDetectorRef,
-    private orderService: OrderService
+    private orderService: OrderService,
+    public dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -62,6 +65,30 @@ export class OrdersListComponent implements OnInit {
   searchChanged(searchValue: string) {
     this.currentSearch = searchValue;
     this.loadOrders(true);
+  }
+
+  getTotalPrice(order: Order) {
+    let total = 0;
+    order.cartItems.forEach(cartItem => {
+      total += cartItem.game.price * cartItem.count;
+    });
+    return total;
+  }
+
+  openDeleteDialog(order: Order) {
+    const dialogRef = this.dialog.open(OrderDeleteDialogComponent, {
+      width: '420px',
+      data: {
+        orderId: order.id
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.orderService.deleteOrderById(order.id).subscribe(() => {
+          this.loadOrders(true);
+        });
+      }
+    });
   }
 
   private loadOrders(forceNewChunk = false) {
