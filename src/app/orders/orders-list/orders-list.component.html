@@ -7,17 +7,18 @@
     (searchChange)="searchChanged($event)"
   >
   </gs-tools>
-<gs-list #list (scrolledToBottom)="loadMoreOrders()" [isAllDataLoaded]="ordersChunk.isAllDataLoaded" >
-  <ng-container ngProjectAs="listBody">
-    <ng-container [ngTemplateOutlet]="ordersList"></ng-container>
-  </ng-container>
-</gs-list>
+  <gs-list #list (scrolledToBottom)="loadMoreOrders()" [isAllDataLoaded]="ordersChunk.isAllDataLoaded" >
+    <ng-container ngProjectAs="listBody">
+      <ng-container [ngTemplateOutlet]="ordersList"></ng-container>
+    </ng-container>
+  </gs-list>
 </div>
 
 <ng-template #ordersList>
   <ng-container *ngFor="let order of ordersChunk.data">
     <ng-container [ngTemplateOutlet]="ordersListItem" [ngTemplateOutletContext]="{order: order}"></ng-container>
   </ng-container>
+  <p *ngIf="ordersChunk.isLoaded && ordersChunk.data.length === 0" class="mat-headline primary-color">No orders!</p>
 </ng-template>
 
 <ng-template #ordersListItem let-order="order">
@@ -69,7 +70,7 @@
               </div>
               <div class="orders-list-item-products-row" *ngFor="let cartItem of order.cartItems">
                 <div class="orders-list-item-products-col orders-list-item-products-col-title">
-                  <img [attr.src]="cartItem.game?.imageUrl" class="orders-list-item-products-image" />
+                  <img [attr.src]="cartItem.game?.imageUrl | imagePlaceholder" class="orders-list-item-products-image" />
                   <p class="orders-list-item-products-title">{{ cartItem.game?.title }}</p>
                 </div>
                 <div class="orders-list-item-products-col orders-list-item-products-price">

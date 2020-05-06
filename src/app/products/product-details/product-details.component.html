@@ -3,7 +3,7 @@
     <div class="page-content-item">
       <div class="product-details-component">
         <div class="product-details-component-left">
-          <img [attr.src]="product.imageUrl" class="product-details-component-image" />
+          <img [attr.src]="product.imageUrl | imagePlaceholder" class="product-details-component-image" />
         </div>
         <div class="product-details-component-right">
           <h1 class="product-details-component-title">{{ product.title }}</h1>

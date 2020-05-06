@@ -1,0 +1,31 @@
+  
+<div class="input-container" (click)="setFocusOnInput()">
+    <div class="placeholder" *ngIf="placeholder && showPlaceholder && !(selectedCategories?.length > 0) && (suitableCategories | async)?.length === 0">
+        {{placeholder}}
+    </div>
+    <div *ngFor="let category of selectedCategories" class="category-item">
+        <span>
+            {{category.name}}
+        </span>
+        <span class="remove-icon" (click)="removeCategory(category.id)">
+            <mat-icon>clear</mat-icon>
+        </span>
+    </div>
+    <div class="filter-input-container">
+        <input type="text"
+            class="filter-input"
+            [formControl]="filterControl"
+            (keydown.enter)="addFirstSuitable($event)"
+            (keydown.backspace)="removeLastSelected()"
+            (focus)="showPlaceholder = false"
+            (focusout)="onTouched(); showPlaceholder = true"
+        />
+        <ul class="category-list">
+            <li *ngFor="let category of (suitableCategories | async)" (click)="selectCategory(category)">
+                <span>
+                    {{category.name}}
+                </span>
+            </li>
+        </ul>
+    </div>
+</div>

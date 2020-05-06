@@ -1,1 +1,1 @@
-<h1 class="error-title">Page not found <span class="error-code">404</span></h1>
+<h1 class="error-title">{{(route.data | async).errorMessage || '4xx'}} <span class="error-code">{{(route.data | async).errorCode || 'Error!'}}</span></h1>

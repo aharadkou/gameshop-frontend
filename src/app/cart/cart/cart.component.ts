@@ -33,7 +33,7 @@ export class CartComponent implements OnInit {
   doneFormGroup: FormGroup;
   $addedProductCount = this.cartService.$addedProductCount;
 
-  ngOnInit(): void {
+  ngOnInit() {
 
     this.nameFormGroup = this.formBuilder.group({
       name: ['', Validators.required]

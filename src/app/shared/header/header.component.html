@@ -13,19 +13,36 @@
       </span>
     </div>
     <div class="header-wrapper-right">
-      <mat-menu #menu="matMenu">
-        <ng-template matMenuContent let-addedProductCount="$addedProductCount">
-          <button mat-menu-item [disabled]="!($addedProductCount | async)" routerLink="/cart">
+      <mat-menu #adminMenu="matMenu">
+        <button mat-menu-item *ngIf="(userRoles$ | async)?.length > 0" [matMenuTriggerFor]="roleMenu">Management</button>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon color="warn">exit_to_app</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
+      <mat-menu #roleMenu="matMenu">
+        <button mat-menu-item *ngFor="let userRole of userRoles$ | async" [routerLink]="role[userRole]">{{ getOptionName(role[userRole]) }}</button>
+      </mat-menu>
+      <div *ngIf="authService.loggedIn" [matMenuTriggerFor]="adminMenu" class="user-avatar-container">
+        <div class="user-avatar-details">
+          <div class="user-avatar-name">{{(user$ | async)?.name || (user$ | async)?.nickname}}</div>
+          <div class="user-avatar-email">{{(user$ | async)?.email}}</div>
+        </div>
+        <img class="user-avatar" [src]="(user$ | async)?.picture">
+      </div>
+      <mat-menu #cartMenu="matMenu">
+        <ng-template matMenuContent>
+          <button mat-menu-item [disabled]="!(addedProductCount$ | async)" routerLink="/cart">
             <mat-icon color="primary">shop</mat-icon>
             <span>Proceed to checkout</span>
           </button>
-          <button mat-menu-item (click)="clearCart()" [disabled]="!($addedProductCount | async)">
+          <button mat-menu-item (click)="clearCart()" [disabled]="!(addedProductCount$ | async)">
             <mat-icon color="warn">remove_shopping_cart</mat-icon>
             <span>Clear cart</span>
           </button>
         </ng-template>
       </mat-menu>
-      <span class="header-item header-cart-item" [matBadge]="$addedProductCount | async" matBadgeColor="accent" [matMenuTriggerFor]="menu" [matMenuTriggerData]="{$addedProductCount: $addedProductCount}">
+      <span class="header-item header-cart-item" [matBadge]="addedProductCount$ | async" matBadgeColor="accent" [matMenuTriggerFor]="cartMenu">
         <mat-icon class="header-cart-icon">shopping_cart</mat-icon>
       </span>
     </div>

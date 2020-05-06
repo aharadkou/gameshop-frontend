@@ -16,24 +16,24 @@ export class CartService {
     this.$addedProductCount = new BehaviorSubject(this.getProductCount(this.getCart()));
   }
 
-  addToCart(product: Product) {
+  addToCart(productId: number) {
     const cart = this.getCart();
-    if (!cart[product.id]) {
-      cart[product.id] = 0;
+    if (!cart[productId]) {
+      cart[productId] = 0;
     }
-    cart[product.id] += 1;
+    cart[productId] += 1;
     this.saveToLocalStorage(cart);
   }
 
-  setCount(product: Product, count: number) {
+  setCount(productId: number, count: number) {
     const cart = this.getCart();
-    cart[product.id] = count;
+    cart[productId] = count;
     this.saveToLocalStorage(cart);
   }
 
-  removeFromCart(product: Product) {
+  removeFromCart(productId: number) {
     const cart = this.getCart();
-    delete cart[product.id];
+    delete cart[productId];
     this.saveToLocalStorage(cart);
   }
 
@@ -45,7 +45,7 @@ export class CartService {
   }
 
   private getProductCount(cart: Cart) {
-    return Object.values(cart).reduce((total: number, value: number) => total + value, 0);
+    return Object.values(cart).reduce((total: number, value: number) => total + +value, 0);
   }
 
   clearCart() {

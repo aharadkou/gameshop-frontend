@@ -1,1 +1,6 @@
-<p>product-edit works!</p>
+<div class="page-content">
+  <div class="page-content-item">
+    <h2>Edit product</h2>
+    <gs-product-form *ngIf="product" [product]="product" (formSubmited)="editProduct($event)"></gs-product-form>
+  </div>
+</div>

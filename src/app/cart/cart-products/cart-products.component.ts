@@ -23,10 +23,11 @@ export class CartProductsComponent implements OnInit {
     private cartService: CartService
   ) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.productService.getProductsByIds(this.cartService.getProductsIds()).subscribe(
       products => {
         if (products) {
+          this.removeDeletedFromCart(products);
           this.addedProducts = products;
           this.countInputs = this.formBuilder.array([]);
           this.addedProducts.forEach(addedProduct => {
@@ -42,6 +43,15 @@ export class CartProductsComponent implements OnInit {
         }
       }
     );
+  }
+
+  private removeDeletedFromCart(products: Product[]) {
+    this.cartService.getProductsIds().forEach(productId => {
+      const loadedProduct = products.find(product => product.id === productId);
+      if (!loadedProduct) {
+        this.cartService.removeFromCart(productId);
+      }
+    });
   }
 
   private mergeCountInputs() {
@@ -62,7 +72,7 @@ export class CartProductsComponent implements OnInit {
   }
 
   setProductCount(product: Product, count: number) {
-    return this.cartService.setCount(product, count);
+    return this.cartService.setCount(product.id, count);
   }
 
   getTotalProductPrice(product: Product) {
@@ -90,7 +100,7 @@ export class CartProductsComponent implements OnInit {
   }
 
   removeFromCart(product: Product) {
-    this.cartService.removeFromCart(product);
+    this.cartService.removeFromCart(product.id);
   }
 
   private findProductById(productId: number) {

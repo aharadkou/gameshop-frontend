@@ -1,12 +1,13 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
-import { DataChunk } from 'src/app/common-services/models/chunk-model';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { DataChunk } from 'src/app/common-services/models/data-chunk';
 import { Order } from 'src/app/common-services/interfaces/order.model';
 import { FilterOption } from 'src/app/common-services/interfaces/filter-option.model';
 import { DATA_LOAD_LIMIT } from 'src/app/common-services/constants/constants';
 import { OrderService } from 'src/app/common-services/services/order.service';
 import { ListComponent } from 'src/app/shared/list/list.component';
 import { MatDialog } from '@angular/material/dialog';
-import { OrderDeleteDialogComponent } from '../order-delete-dialog/order-delete-dialog.component';
+import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
+import { Product } from 'src/app/common-services/interfaces/product.model';
 
 @Component({
   selector: 'gs-orders-list',
@@ -35,17 +36,16 @@ export class OrdersListComponent implements OnInit {
   currentSearch = '';
 
   constructor(
-    private cdRef: ChangeDetectorRef,
     private orderService: OrderService,
     public dialog: MatDialog
   ) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.loadOrders(true);
   }
 
-  filterChanged(filterOption: FilterOption) {
-    this.currentProcessedStatus = filterOption.value;
+  filterChanged(filterValue: boolean) {
+    this.currentProcessedStatus = filterValue;
     this.loadOrders(true);
   }
 
@@ -58,7 +58,7 @@ export class OrdersListComponent implements OnInit {
   processedStatusChanged(order: Order) {
     order.isProcessed = !order.isProcessed;
     this.orderService.updateOrder(order).subscribe(() => {
-      this.cdRef.detectChanges();
+      this.ordersChunk = new DataChunk(this.ordersChunk);
     });
   }
 
@@ -70,16 +70,18 @@ export class OrdersListComponent implements OnInit {
   getTotalPrice(order: Order) {
     let total = 0;
     order.cartItems.forEach(cartItem => {
-      total += cartItem.game.price * cartItem.count;
+      if (cartItem.game) {
+        total += cartItem.game.price * cartItem.count;
+      }
     });
     return total;
   }
 
   openDeleteDialog(order: Order) {
-    const dialogRef = this.dialog.open(OrderDeleteDialogComponent, {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '420px',
       data: {
-        orderId: order.id
+        message: `Are you sure want to delete Order № ${order.id}?`
       }
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -92,14 +94,17 @@ export class OrdersListComponent implements OnInit {
   }
 
   private loadOrders(forceNewChunk = false) {
-    this.ordersChunk = forceNewChunk ? new DataChunk<Order>() : this.ordersChunk;
-    this.cdRef.detectChanges();
+    const currentChunk = forceNewChunk ? new DataChunk<Order>() : this.ordersChunk;
+    this.ordersChunk = new DataChunk({
+      ...currentChunk,
+      isLoaded: false
+    } as DataChunk<Order>);
     this.orderService.getOrders({
       limit: DATA_LOAD_LIMIT,
       processedStatus: this.currentProcessedStatus,
       filter: this.currentSearch
-    }, this.ordersChunk).subscribe(() => {
-      this.cdRef.detectChanges();
+    }, this.ordersChunk).subscribe(ordersChunk => {
+      this.ordersChunk = ordersChunk;
       if (forceNewChunk && this.list) {
         this.list.scrollToTop();
       }

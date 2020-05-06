@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import createAuth0Client from '@auth0/auth0-spa-js';
 import Auth0Client from '@auth0/auth0-spa-js/dist/typings/Auth0Client';
 import { from, of, Observable, BehaviorSubject, combineLatest, throwError } from 'rxjs';
-import { tap, catchError, concatMap, shareReplay } from 'rxjs/operators';
+import { tap, catchError, concatMap, shareReplay, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { CLIENT_ID } from '../constants/constants';
+import { CLIENT_ID, APP_NAMESPACE } from '../constants/constants';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,8 @@ export class AuthService {
       domain: 'dev-vhc0s9zz.eu.auth0.com',
       client_id: CLIENT_ID,
       redirect_uri: `${window.location.origin}`,
-      audience: 'https://gameshop-api'
+      audience: 'https://gameshop-api',
+      useRefreshTokens: true
     })
   ) as Observable<Auth0Client>).pipe(
     shareReplay(1),
@@ -35,6 +36,10 @@ export class AuthService {
   private userProfileSubject$ = new BehaviorSubject<any>(null);
 
   userProfile$ = this.userProfileSubject$.asObservable();
+  userRoles$ = this.userProfileSubject$.pipe(
+    switchMap(user => of(user ? user[APP_NAMESPACE + '/roles'] : [])
+    )
+  );
   loggedIn: boolean = null;
 
   constructor(private router: Router) {
@@ -104,6 +109,12 @@ export class AuthService {
         returnTo: `${window.location.origin}`
       });
     });
+  }
+
+  hasRole(roleName: string) {
+    const user = this.userProfileSubject$.getValue();
+    const userRoles = user ? user[APP_NAMESPACE + '/roles'] : [];
+    return !!userRoles.find((role: any) => role === roleName);
   }
 
 }

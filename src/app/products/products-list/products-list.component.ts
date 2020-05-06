@@ -1,80 +1,74 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
 import { Product } from 'src/app/common-services/interfaces/product.model';
-import { ProductService } from 'src/app/common-services/services/product.service';
 import { CartService } from 'src/app/common-services/services/cart.service';
-import { SortOrder } from 'src/app/common-services/enums/sort-order.enum';
 import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { DataChunk } from 'src/app/common-services/models/chunk-model';
 import { DATA_LOAD_LIMIT, SNACKBAR_DURATION, LOADING_DEBOUNCE } from 'src/app/common-services/constants/constants';
 import { SortCriteria } from 'src/app/common-services/interfaces/sort-criteria.model';
-import { FilterOption } from 'src/app/common-services/interfaces/filter-option.model';
-import { CategoryService } from 'src/app/common-services/services/category.service';
 import { ListComponent } from 'src/app/shared/list/list.component';
 import { BehaviorSubject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { ProductFacade } from '../product-facade';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
+import { SortOrder } from 'src/app/common-services/models/sort-order.enum';
+import { AuthService } from 'src/app/common-services/services/auth.service';
+import { Role } from 'src/app/common-services/models/role.enum';
 
 @Component({
   selector: 'gs-products-list',
   templateUrl: './products-list.component.html',
   styleUrls: ['./products-list.component.scss']
 })
-export class ProductsListComponent implements OnInit, OnDestroy {
-
-  productsChunk: DataChunk<Product>;
-  categories: FilterOption[];
+export class ProductsListComponent implements OnInit, OnDestroy, AfterViewInit {
   sortOrder = SortOrder;
-  $isLoading = new BehaviorSubject(false);
-  isLoading = false;
+  private isLoading = new BehaviorSubject(false);
+
+  get isLoading$() {
+    return this.isLoading.pipe(debounceTime(LOADING_DEBOUNCE));
+  }
+
   @ViewChild('list') list: ListComponent;
   snackBarRef: MatSnackBarRef<SimpleSnackBar>;
-  sortCriterias = [
-    {
-      fieldText: 'Title',
-      fieldName: 'title',
-      order: SortOrder.NONE
-    },
-    {
-      fieldText: 'Price',
-      fieldName: 'price',
-      order: SortOrder.NONE
-    }
-  ];
-  currentFilter: FilterOption = {value: -1, displayValue: 'All'};
-  currentSearch = '';
+  productsChunk = this.productFacade.getProductsChunk$();
+  categories = this.productFacade.getCategories$();
+  sortCriterias = this.productFacade.getSortCriterias$();
+  filter = this.productFacade.getFilter$();
+  search = this.productFacade.getSearch$();
+  isAuthenticated = this.authService.isAuthenticated$;
 
   constructor(
-    private productService: ProductService,
+    private productFacade: ProductFacade,
     private cartService: CartService,
     private snackBar: MatSnackBar,
     private router: Router,
-    private cdRef: ChangeDetectorRef,
-    private categoryService: CategoryService
+    public dialog: MatDialog,
+    private authService: AuthService
   ) { }
 
-  ngOnInit(): void {
-    this.loadProducts(true);
-    this.categoryService.getCategories().subscribe(categories => {
-      this.categories = [this.currentFilter].concat(categories.map(category => {
-        return {
-          value: category.id,
-          displayValue: category.name
-        };
-      }));
-    });
-    this.$isLoading.pipe(debounceTime(LOADING_DEBOUNCE)).subscribe(flag => {
-      this.isLoading = flag;
-    });
+  ngOnInit() {
+    if (!this.productFacade.getProductsChunk()) {
+      this.loadProducts(true);
+    }
   }
 
-  ngOnDestroy(): void {
+  ngAfterViewInit() {
+    if (this.productFacade.getProductsChunk() && this.productFacade.getScrollTop() && this.list) {
+      this.list.scrollTop = this.productFacade.getScrollTop();
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.list) {
+      this.productFacade.setScrollTop(this.list.scrollTop );
+    }
     if (this.snackBarRef) {
       this.snackBarRef.dismiss();
     }
   }
 
   addToCart(product: Product) {
-    this.cartService.addToCart(product);
+    this.cartService.addToCart(product.id);
     this.snackBarRef = this.snackBar.open(`${product.title} was added to your cart!`, 'Proceed to checkout', {
       duration: SNACKBAR_DURATION
     });
@@ -84,38 +78,56 @@ export class ProductsListComponent implements OnInit, OnDestroy {
   }
 
   sortChanged(sortCriterias: SortCriteria[]) {
-    this.sortCriterias = sortCriterias;
+    this.productFacade.setSortCriterias(sortCriterias);
     this.loadProducts(true);
   }
 
   searchChanged(searchValue: string) {
-    this.currentSearch = searchValue;
+    this.productFacade.setSearch(searchValue);
     this.loadProducts(true);
   }
 
-  filterChanged(filterOption: FilterOption) {
-    this.currentFilter = filterOption;
+  filterChanged(filter: number) {
+    this.productFacade.setFilter(filter);
     this.loadProducts(true);
   }
 
   loadMoreProducts() {
-    if (!this.productsChunk.isAllDataLoaded) {
-      this.loadProducts();
-    }
+    this.loadProducts();
+  }
+
+  hasRole(role: string) {
+    return this.authService.hasRole(role);
+  }
+
+  openDetails(product: Product) {
+    this.router.navigate(['/products', product.id]);
+  }
+
+  openDeleteDialog(product: Product) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        message: `Are you sure want to delete ${product.title}?`
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.productFacade.deleteProductById(product.id).subscribe(() => {
+          this.loadProducts(true);
+        });
+      }
+    });
   }
 
   private loadProducts(forceNewChunk = false) {
-    this.$isLoading.next(true);
-    this.productsChunk = forceNewChunk ? new DataChunk<Product>() : this.productsChunk;
-    this.cdRef.detectChanges();
-    this.productService.getProducts({
+    this.isLoading.next(true);
+    this.productFacade.loadProducts({
       limit: DATA_LOAD_LIMIT,
-      sort: this.sortCriterias,
-      filter: this.currentSearch,
-      categories: [this.currentFilter.value]
-    }, this.productsChunk).subscribe(() => {
-      this.$isLoading.next(false);
-      this.cdRef.detectChanges();
+      sort: this.productFacade.getSortCriterias(),
+      filter: this.productFacade.getSearch(),
+      categories: [this.productFacade.getFilter()]
+    }, forceNewChunk).subscribe(() => {
+      this.isLoading.next(false);
       if (forceNewChunk && this.list) {
         this.list.scrollToTop();
       }

@@ -1,1 +1,6 @@
-<p>product-add works!</p>
+<div class="page-content">
+  <div class="page-content-item">
+    <h2>Add product</h2>
+    <gs-product-form [product]="product" (formSubmited)="addProduct($event)"></gs-product-form>
+  </div>
+</div>

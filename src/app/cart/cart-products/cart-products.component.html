@@ -5,7 +5,7 @@
     <ng-container *ngIf="getProductCount(addedProduct)">
       <div class="cart-item">
         <div>
-          <img class="cart-item-image" [attr.src]="addedProduct.imageUrl">
+          <img class="cart-item-image" [attr.src]="addedProduct.imageUrl | imagePlaceholder">
           <span class="cart-item-title" [routerLink]="['/products', addedProduct.id]">{{ addedProduct.title }}</span>
         </div>
         <div>

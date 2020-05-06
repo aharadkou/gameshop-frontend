@@ -4,9 +4,9 @@ import { Order } from '../interfaces/order.model';
 import { ORDERS_URL } from '../constants/constants';
 import { Cart } from '../interfaces/cart.model';
 import { OrderRequestParams } from '../interfaces/order-request-params.model';
-import { DataChunk } from '../models/chunk-model';
-import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { DataChunk } from '../models/data-chunk';
 
 @Injectable({
   providedIn: 'root'
@@ -16,20 +16,16 @@ export class OrderService {
   constructor(private http: HttpClient) { }
 
   createOrder(order: Order, cart: Cart) {
-    const body = {
-      order,
-      cart
-    };
-    return this.http.post<Order>(ORDERS_URL, body);
+    return this.http.post<Order>(ORDERS_URL, { order, cart });
   }
 
   updateOrder(order: Order) {
-    return this.http.put<Order>(`${ORDERS_URL}/${order.id}`, order);
+    const payload = { ...order };
+    delete payload.cartItems;
+    return this.http.put<Order>(`${ORDERS_URL}/${order.id}`, payload);
   }
 
   getOrders(paginationParams: OrderRequestParams, ordersChunk: DataChunk<Order>): Observable<DataChunk<Order>> {
-    ordersChunk.page += 1;
-    ordersChunk.isLoaded = false;
     let params = new HttpParams();
     params = params.append('page', ordersChunk.page.toString());
     params = params.append('filter', paginationParams.filter.toString());
@@ -38,8 +34,7 @@ export class OrderService {
       params = params.append('processedStatus', paginationParams.processedStatus.toString());
     }
     return this.http.get<any>(ORDERS_URL, {params}).pipe(
-      map(result => ordersChunk.populate(result)),
-      tap(() => ordersChunk.isLoaded = true)
+      switchMap(result => of(ordersChunk.populate(result)))
     );
   }
 

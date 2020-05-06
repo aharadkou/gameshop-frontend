@@ -1,0 +1,71 @@
+@import 'main';
+
+.input-container {
+  width: 100%;
+  min-height: 35px;
+  align-items: center;
+  display: flex;
+  border: 1px solid #949494;
+  border-radius: 5px;
+  background: white;
+  padding: 5px 3px;
+}
+
+.filter-input {
+  display: inline-block;
+  position: relative;
+  border: none;
+  outline: none;
+}
+
+.category-item {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px;
+  margin: 0 6px;
+  background-color: $primary;
+  color: white;
+  border-radius: 3px;
+  font-weight: bold;
+  font-size: 14px;
+  .remove-icon {
+    padding-left: 4px;
+    cursor: pointer;
+    mat-icon {
+      font-size: 20px;
+      line-height: 26px;
+    }
+  }
+  
+}
+
+.category-list {
+  position: absolute;
+  z-index: 10;
+  margin: 0;
+  padding: 0;
+  border: 1px solid gainsboro;
+  background-color: white;
+  border-radius: 3px;
+}
+
+.category-list li {
+  display: block;
+  padding: 7px;
+  cursor: pointer;
+}
+
+.category-list li:hover {
+  background-color: $primary;
+  color: white;
+}
+
+.hidden {
+  display: none;
+}
+
+.placeholder {
+  user-select: none;
+  color: #757575;
+  cursor: text;
+}

@@ -5,7 +5,7 @@ import { ProductDetailsComponent } from './product-details/product-details.compo
 import { ProductAddComponent } from './product-add/product-add.component';
 import { ProductEditComponent } from './product-edit/product-edit.component';
 import { ProductFormComponent } from './product-form/product-form.component';
-
+import { CategoryInputComponent } from './product-form/category-input/category-input.component';
 
 
 @NgModule({
@@ -14,7 +14,8 @@ import { ProductFormComponent } from './product-form/product-form.component';
     ProductDetailsComponent,
     ProductAddComponent,
     ProductEditComponent,
-    ProductFormComponent
+    ProductFormComponent,
+    CategoryInputComponent
   ],
   imports: [
     SharedModule

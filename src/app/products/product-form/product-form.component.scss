@@ -1,0 +1,33 @@
+.product-form {
+  &-field {
+    width: 100%;
+    display: block;
+    &-image {
+      @extend .product-form-field;
+      display: flex;
+      align-items: flex-end;
+    }
+    button {
+      margin-right: 10px;
+      margin-top: 14px;
+    }
+  }
+  .product-image-container {
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+    padding-bottom: 1.25rem;
+    padding-left: 16px;
+    .product-image {
+      width: 164px;
+      height: 164px;
+      border-radius: 22px;
+      &-remove-icon {
+        position: absolute;
+        top: -14px;
+        right: -10px;
+      }
+    }
+  }
+
+}

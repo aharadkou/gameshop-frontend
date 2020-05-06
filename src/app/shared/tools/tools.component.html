@@ -9,7 +9,7 @@
     </mat-form-field>
     <mat-form-field class="tools-item" *ngIf="filterOptions && filterOptions.length > 0"> 
       <mat-label>{{ filterPlaceholder }}</mat-label>
-      <mat-select disableOptionCentering  (selectionChange)="filterChange.emit($event)" [(value)]="selectedFilter">
+      <mat-select disableOptionCentering  (selectionChange)="filterChange.emit($event.value)" [(value)]="filter">
         <mat-option *ngFor="let filterOption of filterOptions" [value]="filterOption.value">
           {{ filterOption.displayValue }}
         </mat-option>
@@ -19,7 +19,7 @@
       <span>
         Order by:
       </span>
-      <button class="sort-criteria-btn" mat-button *ngFor="let sortCriteria of sortCriterias" (click)="sortChanged(sortCriteria.fieldName, sortCriteria.order)">
+      <button class="sort-criteria-btn" mat-button *ngFor="let sortCriteria of sortCriterias" (click)="sortCriterasChanged(sortCriteria.fieldName, sortCriteria.order)">
         <span>
           <mat-icon>
             <ng-container *ngIf="sortCriteria.order === sortOrder.ASC">arrow_drop_up</ng-container>
@@ -31,5 +31,7 @@
         </span>
       </button>
     </div>
+    <ng-content select="actions">
+    </ng-content>
   </div>
 </div>

@@ -10,6 +10,7 @@ import { ProductAddComponent } from './products/product-add/product-add.componen
 import { ProductEditComponent } from './products/product-edit/product-edit.component';
 import { OrdersListComponent } from './orders/orders-list/orders-list.component';
 import { AuthGuard } from './common-services/guards/auth.guard';
+import { OrdersGuard } from './common-services/guards/orders.guars';
 
 
 const routes: Routes = [
@@ -26,28 +27,28 @@ const routes: Routes = [
         path: ''
       },
       {
-        component: ProductDetailsComponent,
-        path: ':id'
-      },
-      {
         component: ProductAddComponent,
         path: 'add'
       },
       {
         component: ProductEditComponent,
         path: 'edit/:id'
-      }
+      },
+      {
+        component: ProductDetailsComponent,
+        path: ':id'
+      },
     ]
   },
-
   {
     path: 'admin',
-    // canActivate: [AuthGuard],
-    // canActivateChild: [AuthGuard]
+    canActivate: [AuthGuard],
+    canActivateChild: [AuthGuard],
     children: [
       {
         path: 'orders',
         component: OrdersListComponent,
+        canActivate: [OrdersGuard]
       },
     ]
   },
@@ -56,8 +57,20 @@ const routes: Routes = [
     component: CartComponent
   },
   {
+    path: 'forbidden',
+    component: ErrorComponent,
+    data: {
+      errorCode: '403',
+      errorMessage: 'Access forbidden! You don\'t have enough rights, contact the administrator.'
+    }
+  },
+  {
     path: '**',
-    component: ErrorComponent
+    component: ErrorComponent,
+    data: {
+      errorCode: '404',
+      errorMessage: 'Page not found!'
+    }
   }
 ];
 

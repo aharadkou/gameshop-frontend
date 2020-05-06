@@ -8,5 +8,7 @@ export interface Order {
   comment?: string;
   date?: Date;
   isProcessed?: boolean;
-  cartItems?: {game: Product, count: number}[];
+  cartItems?: {
+    game: Product, count: number
+  }[];
 }

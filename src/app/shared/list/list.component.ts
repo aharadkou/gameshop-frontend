@@ -1,5 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild, Input } from '@angular/core';
-import { PerfectScrollbarDirective } from 'ngx-perfect-scrollbar';
+import { Component, OnInit, Output, EventEmitter, Input, ViewChild, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'gs-list',
@@ -10,17 +9,30 @@ export class ListComponent implements OnInit {
 
   @Output() scrolledToBottom = new EventEmitter();
   @Input() isAllDataLoaded: boolean;
-  @ViewChild('scroll') scrollbar: PerfectScrollbarDirective;
+  @ViewChild('list') list: ElementRef;
 
+  get scrollTop() {
+    if (this.list) {
+      return this.list.nativeElement.scrollTop;
+    } else {
+      return 0;
+    }
+  }
+
+  set scrollTop(scrollTop: number) {
+    if (this.list) {
+      this.list.nativeElement.scrollTop = scrollTop;
+    }
+  }
 
   constructor() { }
 
-  ngOnInit(): void {
+  ngOnInit() {
   }
 
   scrollToTop() {
-    if (this.scrollbar) {
-      this.scrollbar.scrollToTop();
+    if (this.list) {
+      this.list.nativeElement.scrollTop = 0;
     }
   }
 

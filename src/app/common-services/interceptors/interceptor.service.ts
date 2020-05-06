@@ -6,8 +6,8 @@ import {
   HttpInterceptor
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { mergeMap, catchError } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
+import { mergeMap, catchError } from 'rxjs/operators';
 
 const SECURED_ENDPOINTS = [
   {
@@ -31,18 +31,18 @@ export class InterceptorService implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    // const securedEndpoint = SECURED_ENDPOINTS.find(endpoint => endpoint.url === req.url);
-    // if (securedEndpoint && securedEndpoint.methods.includes(req.method)) {
-    //   return this.auth.getTokenSilently$().pipe(
-    //     mergeMap(token => {
-    //       const tokenReq = req.clone({
-    //         setHeaders: { Authorization: `Bearer ${token}` }
-    //       });
-    //       return next.handle(tokenReq);
-    //     }),
-    //     catchError(err => throwError(err))
-    //   );
-    // }
+    const securedEndpoint = SECURED_ENDPOINTS.find(endpoint => endpoint.url === req.url);
+    if (securedEndpoint && securedEndpoint.methods.includes(req.method)) {
+      return this.auth.getTokenSilently$().pipe(
+        mergeMap(token => {
+          const tokenReq = req.clone({
+            setHeaders: { Authorization: `Bearer ${token}` }
+          });
+          return next.handle(tokenReq);
+        }),
+        catchError(err => throwError(err))
+      );
+    }
     return next.handle(req);
   }
 }

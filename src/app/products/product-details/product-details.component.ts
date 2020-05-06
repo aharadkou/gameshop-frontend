@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProductService } from 'src/app/common-services/services/product.service';
 import { Product } from 'src/app/common-services/interfaces/product.model';
 import { CartService } from 'src/app/common-services/services/cart.service';
 import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material/snack-bar';
 import { SNACKBAR_DURATION } from 'src/app/common-services/constants/constants';
+import { ProductFacade } from '../product-facade';
 
 @Component({
   selector: 'gs-product-details',
@@ -15,7 +15,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private productService: ProductService,
+    private productFacade: ProductFacade,
     private cartService: CartService,
     private snackBar: MatSnackBar,
     private router: Router
@@ -24,19 +24,12 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   product: Product;
   snackBarRef: MatSnackBarRef<SimpleSnackBar>;
 
-  ngOnInit(): void {
-    this.activatedRoute.paramMap.subscribe(map => {
-      const productId = +map.get('id');
-      this.productService.getProductsByIds([productId]).subscribe(products => {
-        if (products && products[0]) {
-          this.product = products[0];
-        }
-      });
-    });
+  ngOnInit() {
+    this.productFacade.getProductFromRoute(this.activatedRoute).subscribe(product => this.product = product);
   }
 
   addToCart() {
-    this.cartService.addToCart(this.product);
+    this.cartService.addToCart(this.product.id);
     this.snackBarRef = this.snackBar.open(`${this.product.title} was added to your cart!`, 'Proceed to checkout', {
       duration: SNACKBAR_DURATION
     });
@@ -45,7 +38,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     if (this.snackBarRef) {
       this.snackBarRef.dismiss();
     }

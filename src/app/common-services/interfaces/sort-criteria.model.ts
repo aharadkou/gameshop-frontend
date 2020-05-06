@@ -1,4 +1,4 @@
-import { SortOrder } from '../enums/sort-order.enum';
+import { SortOrder } from '../models/sort-order.enum';
 
 export interface SortCriteria {
   fieldName: string;

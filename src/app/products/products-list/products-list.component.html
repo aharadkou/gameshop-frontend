@@ -1,15 +1,24 @@
 <div class="list-tools-container">
-  <gs-tools 
+  <gs-tools #tools
     searchPlaceholder="Search for games"
     filterPlaceholder="Category"
-    [filterOptions]="this.categories"
-    (filterChange)="filterChanged($event)"
-    [sortCriterias]="sortCriterias"
-    (sortChange)="sortChanged($event)"
+    [sortCriterias]="sortCriterias | async"
+    (sortCriteriasChange)="sortChanged($event)"
+    [search]="search | async"
     (searchChange)="searchChanged($event)"
+    [filterOptions]="categories | async"
+    [filter]="filter | async"
+    (filterChange)="filterChanged($event)"
   >
+    <ng-container ngProjectAs="actions">
+      <div *ngIf="hasRole('M_P')">
+        <button mat-stroked-button color="primary" routerLink="/products/add">
+          <mat-icon aria-hidden="false" aria-label="Add product">add</mat-icon>Add product
+        </button>
+      </div>
+    </ng-container>
   </gs-tools>
-  <gs-list #list (scrolledToBottom)="loadMoreProducts()" [isAllDataLoaded]="productsChunk.isAllDataLoaded" >
+  <gs-list #list (scrolledToBottom)="loadMoreProducts()" [isAllDataLoaded]="(productsChunk | async)?.isAllDataLoaded" >
     <ng-container ngProjectAs="listBody">
       <ng-container [ngTemplateOutlet]="productsList"></ng-container>
     </ng-container>
@@ -17,21 +26,21 @@
 </div>
 
 <ng-template #productsList>
-  <ng-container *ngFor="let product of productsChunk.data">
+  <ng-container *ngFor="let product of (productsChunk | async)?.data">
     <ng-container [ngTemplateOutlet]="productsListItem" [ngTemplateOutletContext]="{product: product}"></ng-container>
   </ng-container>
-  <ng-container *ngIf="productsChunk.isLoaded && productsChunk.data.length === 0"><p class="mat-headline primary-color">No games found for your request!</p></ng-container>
-  <mat-progress-spinner *ngIf="isLoading" mode="indeterminate" class="products-loading"></mat-progress-spinner>
+  <p *ngIf="(productsChunk | async)?.isLoaded && (productsChunk | async)?.data.length === 0" class="mat-headline primary-color">No games found for your request!</p>
+  <mat-progress-spinner *ngIf="isLoading$ | async" mode="indeterminate" class="products-loading"></mat-progress-spinner>
 </ng-template>
 
 <ng-template #productsListItem let-product="product">
   <div class="products-list-item list-item">
     <div class="products-list-item-left">
       <div class="product-image-container">
-        <img [attr.src]="product.imageUrl" class="product-image"/>
+        <img [attr.src]="product.imageUrl | imagePlaceholder" class="product-image"/>
       </div>
       <div class="product-info">
-        <div class="mat-title product-title" mat-button color="primary" [routerLink]="['/products', product.id]">
+        <div class="mat-title product-title" mat-button color="primary" (click)="openDetails(product)">
             {{ product.title }}
         </div>
         <div class="product-description mat-body" ellipsis>
@@ -44,6 +53,10 @@
             </ng-container>
             <mat-chip color="primary" selected>{{ product.price }}$</mat-chip>
           </mat-chip-list>
+          <div class="admin-buttons" *ngIf="hasRole('M_P')">
+            <button class="edit-button" mat-flat-button color="primary" [routerLink]="['/products/edit', product.id]"><mat-icon>edit</mat-icon>Edit</button>
+            <button mat-flat-button color="warn" (click)="openDeleteDialog(product)"><mat-icon>delete_forever</mat-icon>Delete</button>
+          </div>
         </div>
       </div>
     </div>

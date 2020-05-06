@@ -16,9 +16,15 @@ export const LOADING_DEBOUNCE = 1000;
 
 export const CHANGE_COUNT_DEBOUNCE = 200;
 
+export const REACTIVE_SEARCH_DEBOUCE = 500;
+
+export const REACTIVE_SEARCH_MIN_LENGTH = 2;
+
 export const MIN_CART_COUNT = 1;
 
 export const MAX_CART_COUNT = 99;
+
+export const APP_NAMESPACE = 'https://gameshop-api';
 
 export const PATTERN_TELEPHONE = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
 

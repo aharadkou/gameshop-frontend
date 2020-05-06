@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Category } from '../interfaces/category.model';
 import { CATEGORIES_URL } from '../constants/constants';
@@ -11,7 +11,12 @@ export class CategoryService {
 
   constructor(private http: HttpClient) { }
 
-  getCategories(): Observable<Category[]> {
-    return this.http.get<Category[]>(CATEGORIES_URL);
+  getCategories(filter = '', selectedIds: number[] = []): Observable<Category[]> {
+    let params = new HttpParams();
+    params = params.set('filter', filter);
+    selectedIds.forEach(selectedId =>
+      params = params.append('selectedIds[]', selectedId.toString())
+    );
+    return this.http.get<Category[]>(CATEGORIES_URL, {params});
   }
 }
